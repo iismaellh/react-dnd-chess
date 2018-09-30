@@ -5,9 +5,9 @@ import { observe } from './components/Game';
 
 const rootEl = document.getElementById('root');
 
-observe((piecesData, deadPieces) =>
+observe((Game) =>
   ReactDOM.render(
-    <Board piecesData={piecesData} deadPieces={deadPieces} />,
+    <Board Game={Game} />,
     rootEl
   )
 );

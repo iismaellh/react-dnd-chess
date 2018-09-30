@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Piece from './Piece';
-import Pieces from './Pieces';
+import { Game } from './Game';
 import DeathBoard from './BoardDeath';
 import BoardSquare from './BoardSquare';
-import { checkDead } from './Game';
+import { checkDead, restartBoard } from './Game';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 
 class Board extends Component {
   static propTypes = {
-    piecesData: PropTypes.object.isRequired
+    Game: PropTypes.object.isRequired
   }
 
   checkDead(object) {
@@ -25,14 +25,18 @@ class Board extends Component {
     return dead;
   }
 
+  startAgain() {
+    return restartBoard;
+  }
+
   renderSquare(i) {
     const x = i % 8;
     const y = Math.floor(i / 8);
 
     let render = () => {
-      for (const key of Object.keys(Pieces)) {  
-        if (x === this.props.piecesData[key].position[0] && y === this.props.piecesData[key].position[1] && this.props.piecesData[key].status === 'alive') {
-          return <Piece piecePosX={x} piecePosY={y} pieceName={key} pieceType={Pieces[key].type} pieceIcon={Pieces[key].icon} pieceGroup={Pieces[key].group} pieceStatus={this.props.piecesData[key].status}/>;
+      for (const key of Object.keys(Game.pieces)) {  
+        if (x === this.props.Game.pieces[key].position[0] && y === this.props.Game.pieces[key].position[1] && this.props.Game.pieces[key].status === 'alive') {
+          return <Piece piecePosX={x} piecePosY={y} pieceName={key} pieceType={Game.pieces[key].type} pieceIcon={Game.pieces[key].icon} pieceGroup={Game.pieces[key].group} pieceStatus={this.props.Game.pieces[key].status}/>;
         }
       }
     }
@@ -51,7 +55,8 @@ class Board extends Component {
 
   render() {
     const squares = [];
-    let dead = this.checkDead(this.props.piecesData) ? <DeathBoard deadPieces={this.props.piecesData} /> : null;
+    let dead = this.checkDead(this.props.Game.pieces) ? <DeathBoard deadPieces={this.props.Game.pieces} /> : null;
+    let turn = this.props.Game.game.turn === 'white' ? '#8bc34a' : '#000000';
 
     for (let i = 0; i < 64; i++) {
       squares.push(this.renderSquare(i));
@@ -77,11 +82,36 @@ class Board extends Component {
           display: 'flex',
           flexWrap: 'wrap',
           minWidth: '100px',
-          minHeight: '500px',
+          minHeight: '300px',
           border: '5px solid #6b6b6b',
           float: 'left',
           marginLeft: '5vw'
         }} className="boardDeath">{dead}</div>
+
+         <a onClick={this.startAgain()}
+        style={{
+          position: 'relative',
+          padding: '7px 10px',
+          margin: '10px 0 0 0',
+          clear: 'both',
+          background: '#8bc34a',
+          float: 'left',
+          borderRadius: '1px',
+          cursor: 'pointer'
+        }} id="boardRestart">Restart Board</a>
+
+        <a onClick={this.startAgain()}
+        style={{
+          position: 'relative',
+          padding: '7px 10px',
+          margin: '10px 0 0 10px',
+          background: turn,
+          color: '#ffffff',
+          float: 'left',
+          borderRadius: '1px',
+          cursor: 'pointer'
+        }} id="boardTurn">Turn: {this.props.Game.game.turn.charAt(0).toUpperCase() + this.props.Game.game.turn.substr(1)}</a>
+
       </div>    
     );
   }

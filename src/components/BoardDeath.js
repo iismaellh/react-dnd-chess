@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Piece from './Piece';
 
 export class BoardDeath extends Component {
-  componentDidMount() {
-    
+  static propTypes = {
+    deadPieces: PropTypes.object.isRequired
   }
 
   render() {
@@ -18,7 +19,7 @@ export class BoardDeath extends Component {
     
     return (
       <div id="graveyard">
-        {corpse}
+        {corpse}  
       </div>
     )
   }
