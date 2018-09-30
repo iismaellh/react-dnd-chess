@@ -1,20 +1,39 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Square from './Square';
-import { canMovePieces, movePieces, piecesData } from './Game';
+import { takePiece, canMovePieces, movePieces, Game } from './Game';
 import { DropTarget } from 'react-dnd';
 
 const squareTarget = {
   drop(props, monitor, component) {
     const item = monitor.getItem();
+    const target = getOccupyingPiece(Game.pieces, props.x, props.y);
+    const piece = { pieceName: item.pieceName, x: props.x, y: props.y };
 
-    if (canMovePieces(props.x, props.y, item.pieceName)) {
-        movePieces(props.x, props.y, item.pieceName);
+    if(canMovePieces(item.pieceName)) {
+      if (target) {
+        if(Game.pieces[item.pieceName].group !== Game.pieces[target.name].group) {
+          movePieces(props.x, props.y, item.pieceName, target.name);
+        } else if(Game.pieces[item.pieceName].group === Game.pieces[target.name].group) {
+          alert('You can\'t take an ally!');
+        }
+      } else {
+          movePieces(props.x, props.y, item.pieceName, null);
+      }
     }
 
-    return { pieceName: item.pieceName, x: props.x, y: props.y }
+    return piece;
   }
 };
+
+function getOccupyingPiece(obj, val1, val2) {
+  for(var key in obj) {
+    if(obj[key]['position'][0] === val1 && obj[key]['position'][1] === val2) {
+      return obj[key];
+    }
+  }
+}
+
 
 function collect(connect, monitor) {
   return {

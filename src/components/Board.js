@@ -14,17 +14,6 @@ class Board extends Component {
     Game: PropTypes.object.isRequired
   }
 
-  checkDead(object) {
-    let dead = false;
-    for (const key of Object.keys(object)) {  
-        if (object[key].status === 'taken') {
-            dead = true;
-        } 
-    }
-
-    return dead;
-  }
-
   startAgain() {
     return restartBoard;
   }
@@ -55,7 +44,7 @@ class Board extends Component {
 
   render() {
     const squares = [];
-    let dead = this.checkDead(this.props.Game.pieces) ? <DeathBoard deadPieces={this.props.Game.pieces} /> : null;
+    let dead = this.props.Game.game.death ? <DeathBoard /> : null;
     let turn = this.props.Game.game.turn === 'white' ? '#8bc34a' : '#000000';
 
     for (let i = 0; i < 64; i++) {
@@ -78,11 +67,11 @@ class Board extends Component {
         <div style={{
           position: 'relative',
           width: '20vw',
-          height: '20vw',
+          height: 'auto',
           display: 'flex',
           flexWrap: 'wrap',
           minWidth: '100px',
-          minHeight: '300px',
+          minHeight: '100px',
           border: '5px solid #6b6b6b',
           float: 'left',
           marginLeft: '5vw'
@@ -100,7 +89,7 @@ class Board extends Component {
           cursor: 'pointer'
         }} id="boardRestart">Restart Board</a>
 
-        <a onClick={this.startAgain()}
+        <span onClick={this.startAgain()}
         style={{
           position: 'relative',
           padding: '7px 10px',
@@ -109,8 +98,7 @@ class Board extends Component {
           color: '#ffffff',
           float: 'left',
           borderRadius: '1px',
-          cursor: 'pointer'
-        }} id="boardTurn">Turn: {this.props.Game.game.turn.charAt(0).toUpperCase() + this.props.Game.game.turn.substr(1)}</a>
+        }} id="boardTurn">Turn: {this.props.Game.game.turn.charAt(0).toUpperCase() + this.props.Game.game.turn.substr(1)}</span>
 
       </div>    
     );

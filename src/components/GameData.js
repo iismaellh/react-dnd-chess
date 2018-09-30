@@ -49,7 +49,9 @@ export default GameData = {
     game: {
         turn: 'white',
         lastTurn: 'black',
-        canMove: true
+        canMove: true,
+        moves: [],
+        death: []
     },
     players: {
 

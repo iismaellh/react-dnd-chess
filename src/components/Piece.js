@@ -1,24 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragSource } from 'react-dnd';
+import { Game } from './Game';
 
 const pieceSource = {
   beginDrag(props, monitor, component) {
     return { pieceName: props.pieceName, pieceType: props.pieceType, pieceStatus: props.pieceStatus };
   },
+
   endDrag(props, monitor, component) {
     if (monitor.didDrop()) {
-      const dropResult = monitor.getDropResult();
-      //takePiece(dropResult.x, dropResult.y, dropResult.pieceName);
-    }
-
-    // When dropped on a compatible target, do something.
-    // Read the original dragged item from getItem():
-    const item = monitor.getItem();
-
-    // You may also read the drop result from the drop target
-    // that handled the drop, if it returned an object from
-    // its drop() method.
+      const item = monitor.getDropResult();
+    } 
   }
 };
 

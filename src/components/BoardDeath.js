@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Piece from './Piece';
+import { Game } from './Game';
 
 export class BoardDeath extends Component {
-  static propTypes = {
-    deadPieces: PropTypes.object.isRequired
-  }
-
   render() {
-    const data = this.props.deadPieces;
-    let corpse = Object.keys( data )
-            .map( key => {
-                if(data[key].status === 'taken') {
+    console.log(Game.game.death);
+    let corpse = Game.game.death.map( key => {
                   return (
-                    <Piece key={key} piecePosX={data[key].position[0]} piecePosY={data[key].position[1]} pieceName={key} pieceType={data[key].type} pieceIcon={data[key].icon} pieceGroup={data[key].group} pieceStatus={data[key].status}/> );
-                } 
-            } );
+                    <Piece key={key.name} piecePosX={key.position[0]} piecePosY={key.position[1]} pieceName={key} pieceType={key.type} pieceIcon={key.icon} pieceGroup={key.group} pieceStatus={key.status}/> );
+            });
     
     return (
       <div id="graveyard">

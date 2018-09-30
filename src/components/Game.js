@@ -28,35 +28,40 @@ export function observe(o) {
 
 function movePiece(toX, toY, piece) {
     Game.pieces[piece].position = [toX, toY];
-    emitChange();
 }
 
-export function movePieces(toX, toY, piece) {
-    let move = true;
-
-    if(move) {
-        movePiece(toX, toY, piece);
-        takePiece(toX, toY, piece);
-        checkTurn(piece);
-    }
-   
-    emitChange();
-}
-
-export function takePiece(toX, toY, piece) {
-    let enemy = null;
-
-    for(const key of Object.keys(Game.pieces)) {
-        if(Game.pieces[key].position[0] === toX && Game.pieces[key].position[1] === toY && Game.pieces[key].group !== Game.pieces[piece].group) {
-            enemy = key; 
-        } 
-    }  
-
+export function movePieces(toX, toY, piece, enemy) { 
     if(enemy) {
-        Game.pieces[enemy].status = 'taken';   
+        takePiece(enemy)
     }
 
+    movePiece(toX, toY, piece); 
+    trackMoves(toX, toY, piece) 
+    checkTurn(piece);
+
     emitChange();
+}
+
+export function trackMoves(toX, toY, piece) {
+    Game.game.moves.push({
+        piece: {
+            name: piece,
+            position: [toX, toY]
+        }
+    });
+}   
+
+export function deathList(dead) {
+    Game.game.death.push(dead);
+    emitChange();
+}
+
+export function takePiece(enemy) {
+    Game.pieces[enemy].status = 'taken';
+    deathList(Game.pieces[enemy]);
+    if(enemy) {
+        delete Game.pieces[enemy];
+    } 
 }
 
 export function checkTurn(piece) {
@@ -67,14 +72,13 @@ export function checkTurn(piece) {
         Game.game.turn = 'white';
         Game.game.lastTurn = 'black';
     }
-    emitChange();
 }
 
-export function canMovePieces(toX, toY, piece) {
+export function canMovePieces(piece) {
     let pos = true; 
-    const [x, y] = Game.pieces[piece].position;
-    const dx = toX - x;
-    const dy = toY - y;
+    // const [x, y] = Game.pieces[piece].position;
+    // const dx = toX - x;
+    // const dy = toY - y;
 
     // switch(GameData.pieces[piece]['type']) {
     //     case 'knight':
